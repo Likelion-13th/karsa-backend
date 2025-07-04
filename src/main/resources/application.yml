@@ -1,0 +1,28 @@
+#default profile settings
+spring:
+  profiles:
+    active: local
+#Swagger
+springdoc:
+  swagger-ui:
+    path: /swagger
+    display-request-duration: true
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  cors:
+    enabled: true
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      dialect: org.hibernate.dialect.MySQLDialect
