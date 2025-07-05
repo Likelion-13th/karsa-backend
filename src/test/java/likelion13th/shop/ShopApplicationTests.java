@@ -1,4 +1,4 @@
-package likelion._th.shop;
+package likelion13th.shop;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
