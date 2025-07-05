@@ -8,15 +8,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
-@Getter
+@Entity //DB 한 줄
+@Getter //private를 가능하게 해주는 get 딸깍
 @Table(name = "orders") //예약어 회피
 @NoArgsConstructor
 //파라미터가 없는 디폴트 생성자 자동으로 생성
 public class Order extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY) //유일하게 생성... 중복 안되게
+    @Column(name = "order_id")//그냥 이름
     @Setter(AccessLevel.PRIVATE)
     private Long id;
 
