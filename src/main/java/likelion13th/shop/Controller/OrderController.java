@@ -17,7 +17,7 @@ import likelion13th.shop.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.*; //annotaion의 전부 다(all)
 
 import java.util.Collections;
 import java.util.List;
@@ -47,7 +47,7 @@ public class OrderController {
             log.info("[STEP 2] 주문 생성 성공");
             return ApiResponse.onSuccess(SuccessCode.ORDER_CREATE_SUCCESS, newOrder);
         } catch (GeneralException e) {
-            log.error("❌ [ERROR] 주문 생성 중 예외 발생: {}", e.getReason().getMessage());
+                log.error("❌ [ERROR] 주문 생성 중 예외 발생: {}", e.getReason().getMessage());
             throw e;
         } catch (Exception e){
             log.error("❌ [ERROR] 알 수 없는 예외 발생: {}", e.getMessage());

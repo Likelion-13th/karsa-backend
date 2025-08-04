@@ -12,8 +12,9 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
+@Setter
 @Entity //DB 한 줄
-@Getter //private를 가능하게 해주는 get 딸깍
+@Getter //private 멤버들을 get 할 수 있게해주는거
 @Table(name = "Item") //예약어 회피
 @NoArgsConstructor
 //파라미터가 없는 디폴트 생성자 자동으로 생성
@@ -50,12 +51,16 @@ public class Item extends BaseEntity {
     @JsonIgnore
     private List<Order> orders = new ArrayList<>();
 
-    public Item(String item_name, int price, String thumbnail_img, String brand, boolean isNew) {
+    public Item(String item_name, int price, String imagePath, String brand, boolean isNew) {
         this.item_name = item_name;
         this.price = price;
         this.imagePath = imagePath;
         this.brand = brand;
-        this.isNew= false;
+        this.isNew= isNew;
     }
 }
-}
+
+
+//Item.java
+//Order.java와 제가 만든 ERD 테이블을 참고해 코드를 짜 봤습니다.
+//ERD와 Item.java 매칭을 시켰습니다.

@@ -23,6 +23,34 @@ public class User extends BaseEntity {
     @Setter(AccessLevel.PRIVATE)
     private Long id;
 
+    // 사용자명
+    @Column(nullable = false)
+    private String username;
+
+    // 비밀번호
+    @Column(nullable = false)
+    private String password;
+
+    // 마일리지
+    @Column(nullable = false)
+    private Long mileage;
+
+    //주소
+    @Column(nullable = false)
+    private String address;
+
+    //상세주소
+    @Column(nullable = false)
+    private String field;
+
+    //우편번호
+    @Column(nullable = false)
+    private Long postnumber;
+
+    //최근결제금액
+    @Column(nullable = false)
+    private Long recentlyused;
+
     // 카카오 고유 ID
     @Column(nullable = false, unique = true)
     private String providerId;
@@ -105,4 +133,7 @@ public class User extends BaseEntity {
         this.recentTotal = newTotal;
     }
 }
-
+//User.java
+//Order.java와 제가 만든 ERD 테이블을 참고해 코드를 짜 봤습니다.
+//또한 노션 세션 자료에 나와있는 코드 뿐 아닌 제 ERD 테이블을 보며 필요한 항목들을 추가시켰습니다.
+//따라서 제 ERD와 세션자료에 있던 User.java 코드를 합하였습니다.
