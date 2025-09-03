@@ -5,28 +5,35 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Getter
 @AllArgsConstructor
 public class UserInfoResponseDto {
-    private Long id;
-    private String username;
-    private String password;
-    private Long mileage;
-    private String Address;
-    private String field;
-    private Long postnumber;
-    private Long recentlyused;
+    private String usernickname;
+    private int recentTotal;
+    private int maxMileage;
+    private Map<OrderStatus, Integer> orderStatusCounts; // 각 상태별 주문 개수
+
     public static UserInfoResponseDto from(User user) {
+        // 각 상태별 주문 개수 계산
+        Map<OrderStatus, Integer> orderStatusCounts = user.getOrders().stream()
+                .collect(Collectors.groupingBy(
+                        Order::getStatus,
+                        Collectors.collectingAndThen(Collectors.counting(), Long::intValue)
+                ));
+
+        // PROCESSING, COMPLETE, CANCEL 상태가 없는 경우 0으로 초기화
+        orderStatusCounts.putIfAbsent(OrderStatus.PROCESSING, 0);
+        orderStatusCounts.putIfAbsent(OrderStatus.COMPLETE, 0);
+        orderStatusCounts.putIfAbsent(OrderStatus.CANCEL, 0);
+
         return new UserInfoResponseDto(
-                user.getId(),
-                user.getUsername(),
-                user.getPassword(),
-                user.getMileage(),
-                user.getAddress(),
-                user.getField(),
-                user.getPostnumber(),
-                user.getRecentlyused()
+                user.getUsernickname(),
+                user.getRecentTotal(),
+                user.getMaxMileage(),
+                orderStatusCounts
         );
     }
 }

@@ -1,6 +1,7 @@
 package likelion13th.shop.Controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import likelion13th.shop.DTO.request.CategoryRequest;
 import likelion13th.shop.DTO.response.CategoryResponseDto;
 import likelion13th.shop.DTO.response.ItemResponseDto;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*; //annotaion의 전부 다(all)
 import java.util.Collections;
 import java.util.List;
 
+@Tag(name = "카테고리", description = "카테고리 관련 API 입니다.")
 @Slf4j
 @RestController
 @RequestMapping("/categories")
@@ -107,6 +109,24 @@ public class CategoryController {
             log.error("❌ [ERROR] 알 수 없는 예외 발생: {}", e.getMessage());
             throw new GeneralException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    // 상품 조회(카테고리별)
+    // 컨트롤러에서 Optional 처리하고 있음
+    // 컨트롤러에서는 예외처리만 하고자 함!
+    /** 카테고리 별 상품 조회**/
+    @GetMapping("/{categoryId}/items")
+    @Operation(summary = "카테고리별 상품 조회", description = "상품을 카테고리 별로 조회합니다.")
+    public ApiResponse<?> getItemsByCategory(@PathVariable Long categoryId) {
+        List<ItemResponse> items = categoryService.getItemsByCategory(categoryId);
+
+        //상품 없을 시 : 성공 응답 + 빈 리스트 반환
+        if (items.isEmpty()) {
+            return ApiResponse.onSuccess(SuccessCode.CATEGORY_ITEMS_EMPTY, Collections.emptyList());
+        }
+
+        return ApiResponse.onSuccess(SuccessCode.CATEGORY_ITEMS_GET_SUCCESS, items);
+
     }
 }
 

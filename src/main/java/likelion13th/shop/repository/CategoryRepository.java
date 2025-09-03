@@ -10,7 +10,7 @@ import java.util.Optional;
 
 
 public interface CategoryRepository extends JpaRepository<Category, Long> { //long id를 가져옴
-    Optional<Category> findById(Long categoryId);
+    Optional<Category> findById(Long Id);
 }
 
 //CategoryRepository.java

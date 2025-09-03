@@ -1,16 +1,19 @@
 package likelion13th.shop.service;
 
 import jakarta.transaction.Transactional;
+import likelion13th.shop.DTO.response.ItemResponse;
 import likelion13th.shop.DTO.request.CategoryRequest;
 import likelion13th.shop.DTO.response.CategoryResponseDto;
 import likelion13th.shop.domain.Category;
 import likelion13th.shop.domain.User;
+import likelion13th.shop.domain.Item;
 import likelion13th.shop.domain.Order;
 import likelion13th.shop.global.api.ErrorCode;
 import likelion13th.shop.global.exception.GeneralException;
 import likelion13th.shop.repository.CategoryRepository;
 import likelion13th.shop.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +27,25 @@ import java.util.stream.Collectors;
 public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final ItemRepository itemRepository;
+
+    /** 카테고리 존재 여부 확인 **/
+    // 이런 식으로 검증하는 메서드를 따로 만들어서 재사용성 높일 수 있음
+    public Category findCategoryById(Long categoryId){
+        return categoryRepository.findById(categoryId)
+                .orElseThrow(()-> new GeneralException(ErrorCode.CATEGORY_NOT_FOUND));
+    }
+
+    /** 카테고리 별 상품 목록 조회 **/
+    // DTO에 담아서 반환
+    public List<ItemResponse> getItemsByCategory(Long categoryId) {
+        // 카테고리 유효성 검사
+        Category category = findCategoryById(categoryId);
+
+        List<Item> items = category.getItems();
+        return items.stream()
+                .map(ItemResponse::from)
+                .collect(Collectors.toList());
+    }
 
     //모든카테고리조회
     @Transactional
@@ -40,27 +62,6 @@ public class CategoryService {
                 .orElseThrow(() -> new GeneralException(ErrorCode.CATEGORY_NOT_FOUND));
     }
 
-    //카테고리생성
-    @Transactional
-    public CategoryResponseDto createCategory(CategoryRequest request) {
-        Category category = new Category(
-                request.getCategory_name()
-        );
-        categoryRepository.save(category);
-
-        return CategoryResponseDto.from(category);
-    }
-
-    //카테고리수정
-    @Transactional
-    public CategoryResponseDto updateCategory(Long categoryId, CategoryRequest request) {
-        Category category=categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new GeneralException(ErrorCode.CATEGORY_NOT_FOUND));
-        category.setCategory_name(request.getCategory_name());
-        category.setItems(itemRepository.findAllById(request.getItemIds()));
-
-        return CategoryResponseDto.from(categoryRepository.save(category));
-    }
 
     //카테고리 삭제
     @Transactional

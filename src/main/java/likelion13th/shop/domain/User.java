@@ -31,14 +31,6 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
-    // 마일리지
-    @Column(nullable = false)
-    private Long mileage;
-
-    //주소
-    @Column(nullable = false)
-    private String address;
-
     //상세주소
     @Column(nullable = false)
     private String field;
@@ -46,10 +38,6 @@ public class User extends BaseEntity {
     //우편번호
     @Column(nullable = false)
     private Long postnumber;
-
-    //최근결제금액
-    @Column(nullable = false)
-    private Long recentlyused;
 
     // 카카오 고유 ID
     @Column(nullable = false, unique = true)
@@ -131,6 +119,11 @@ public class User extends BaseEntity {
             throw new IllegalArgumentException("총 결제 금액은 음수가 될 수 없습니다.");
         }
         this.recentTotal = newTotal;
+    }
+
+    // 주소 저장/수정 메서드 추가
+    public void updateAddress(Address address) {
+        this.address = address;
     }
 }
 //User.java

@@ -1,84 +1,75 @@
 package likelion13th.shop.Controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import likelion13th.shop.DTO.request.UserInfoRequest;
-import likelion13th.shop.DTO.response.UserInfoResponseDto;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import likelion13th.shop.DTO.request.AddressRequest;
+import likelion13th.shop.DTO.response.AddressResponse;
+import likelion13th.shop.DTO.response.UserInfoResponse;
+import likelion13th.shop.DTO.response.UserMileageResponse;
+import likelion13th.shop.domain.User;
 import likelion13th.shop.global.api.ApiResponse;
 import likelion13th.shop.global.api.ErrorCode;
 import likelion13th.shop.global.api.SuccessCode;
 import likelion13th.shop.global.exception.GeneralException;
-import likelion13th.shop.service.UserInfoService;
+import likelion13th.shop.login.auth.jwt.CustomUserDetails;
+import likelion13th.shop.login.service.UserService;
+import likelion13th.shop.service.UserAddressService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*; //annotaion의 전부 다(all)
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-import java.util.List;
-
-
-@Slf4j
+/** 사용자 정보 조회, 주소 저장, 사용 가능 마일리지 조회 **/
+@Tag(name = "회원 정보", description = "회원 정보 관련 API 입니다.")
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserInfoController {
-    private  final  UserInfoService userInfoService;
 
-    //내 정보 조회
-    @GetMapping
-    @Operation(summary = "내 정보 조회", description = "내 정보를 조회하는 기능")
-    public ApiResponse<?> findUserInfoById(@PathVariable Long userId) {
-        log.info("[STEP 1] 내 정보 조회 요청 수신...");
+    private final UserService userService;
+    private final UserAddressService userAddressService;
 
-        try{
-            UserInfoResponseDto userInfo=userInfoService.getUserInfoById(userId);
-            log.info("[STEP 2] 내 정보 조회 성공...");
-            return ApiResponse.onSuccess(SuccessCode.USER_INFO_GET_SUCCESS,userInfo);
-        } catch (GeneralException e) {
-            log.error("❌ [ERROR] 내 정보 조회 중 예외 발생: {}", e.getReason().getMessage());
-            throw e;
-        } catch (Exception e){
-            log.error("❌ [ERROR] 알 수 없는 예외 발생: {}", e.getMessage());
-            throw new GeneralException(ErrorCode.INTERNAL_SERVER_ERROR);
-        }
+    /**
+     * 사용자 정보 조회
+     **/
+    @GetMapping("/profile")
+    @Operation(summary = "사용자 정보 조회", description = "로그인한 사용자의 정보와 주문 상태별 개수를 조회합니다.")
+    public ApiResponse<?> getUserInfo(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ) {
+        User user = userService.getAuthenticatedUser(customUserDetails.getProviderId());
+
+        UserInfoResponse userInfo = UserInfoResponse.from(user);
+
+        return ApiResponse.onSuccess(SuccessCode.USER_INFO_GET_SUCCESS, userInfo);
     }
-    //내 마일리지 조회
-    @GetMapping
-    @Operation(summary = "내 마일리지 조회", description = "내 마일리지를 조회하는 기능")
-    public ApiResponse<?> findUserMileageById(@PathVariable Long userId) {
-        log.info("[STEP 1] 내 마일리지 조회 요청 수신...");
 
-        try{
-            UserInfoResponseDto userMileage=userInfoService.getUserMileageById(userId);
-            log.info("[STEP 2] 내 마일리지 조회 성공...");
-            return ApiResponse.onSuccess(SuccessCode.USER_MILEAGE_GET_SUCCESS,userMileage);
-        } catch (GeneralException e) {
-            log.error("❌ [ERROR] 내 정보 조회 중 예외 발생: {}", e.getReason().getMessage());
-            throw e;
-        } catch (Exception e){
-            log.error("❌ [ERROR] 알 수 없는 예외 발생: {}", e.getMessage());
-            throw new GeneralException(ErrorCode.INTERNAL_SERVER_ERROR);
-        }
+    /**
+     * 주소 저장
+     **/
+    @PostMapping("/address")
+    @Operation(summary = "주소 저장", description = "로그인한 사용자의 주소를 저장합니다.")
+    public ApiResponse<AddressResponse> saveAddress(
+            @RequestBody AddressRequest request,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ) {
+        AddressResponse addressResponse = userAddressService.saveAddress(customUserDetails.getProviderId(), request);
+        return ApiResponse.onSuccess(SuccessCode.ADDRESS_SAVE_SUCCESS, addressResponse);
     }
-    //내 주소 조회
-    @GetMapping
-    @Operation(summary = "내 주소 조회", description = "내 주소를 조회하는 기능")
-    public ApiResponse<?> findUserAddressById(@PathVariable Long userId) {
-        log.info("[STEP 1] 내 주소 조회 요청 수신...");
 
-        try{
-            UserInfoResponseDto userAddress=userInfoService.getUserAddressById(userId);
-            log.info("[STEP 2] 내 주소 조회 성공...");
-            return ApiResponse.onSuccess(SuccessCode.USER_ADDRESS_GET_SUCCESS,userAddress);
-        } catch (GeneralException e){
-            log.error("❌ [ERROR] 내 주소 조회 중 예외 발생: {}", e.getReason().getMessage());
-            throw e;
-        } catch (Exception e){
-            log.error("❌ [ERROR] 알 수 없는 예외 발생: {}", e.getMessage());
-            throw new GeneralException(ErrorCode.INTERNAL_SERVER_ERROR);
-        }
+    /**
+     * 로그인한 사용자의 사용 가능 마일리지 조회
+     **/
+    // 결제창에서 쉽게 띄울 수 있도록 별도로 api 만듦
+    @GetMapping("/mileage")
+    @Operation(summary = "사용 가능 마일리지 조회", description = "로그인한 사용자의 사용 가능 마일리지를 조회합니다.")
+    public ApiResponse<UserMileageResponse> getAvailableMileage(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ) {
+        // 로그인한 사용자 정보 조회
+        User user = userService.getAuthenticatedUser(customUserDetails.getProviderId());
+        // 사용 가능한 마일리지 반환
+        return ApiResponse.onSuccess(SuccessCode.USER_MILEAGE_SUCCESS, new UserMileageResponse(user.getMaxMileage()));
     }
 }
-//UserInfoController.java
-//Order API 패턴을 참고하였으며 과제에서 요구했던 명령어들인
-//'나의 정보 조회'.'나의 마일리지 조회','나의 주소 조회' 등에 맞는 코드를 짜 봤습니다.
-//UserInfoService.java와 매칭을 시켰습니다.
+
+//운영진 코드로 교체

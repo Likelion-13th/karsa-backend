@@ -11,11 +11,10 @@ import java.util.List;
 @NoArgsConstructor
 public class ItemRequest {
     private String item_name;
-    private int item_price;
-    private int item_quantity;
-    private String item_brand;
+    private int price;
+    private String brand;
     private String imagePath;
-    private boolean isNewItem;
+    private boolean isNew;
     private List<Long> categoryIds;
 
 }

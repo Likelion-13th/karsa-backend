@@ -23,16 +23,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByProviderId(String providerId);
 
     // usernickname(닉네임) 기반 사용자 찾기 (develop)
-    List<User> findByUsernickname(String usernickname);
+    //List<User> findByUsernickname(String usernickname);
 
     // 향후 필요 시 사용할 수 있도록 주석 유지
     //Optional<User> findByKakaoId(String kakaoId);
-
-    //user_id 기반 마일리지 조회
-    Optional<User> findMileageById(Long userId);
-
-    //user_id 기반 주소 조회
-    Optional<User> findAddressById(Long userId);
 
 }
 //UserRepository.java
