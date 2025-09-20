@@ -1,7 +1,7 @@
 package likelion13th.shop.service;
 
 import jakarta.transaction.Transactional;
-import likelion13th.shop.DTO.response.ItemResponse;
+import likelion13th.shop.DTO.response.ItemResponseDto;
 import likelion13th.shop.DTO.request.CategoryRequest;
 import likelion13th.shop.DTO.response.CategoryResponseDto;
 import likelion13th.shop.domain.Category;
@@ -37,13 +37,13 @@ public class CategoryService {
 
     /** 카테고리 별 상품 목록 조회 **/
     // DTO에 담아서 반환
-    public List<ItemResponse> getItemsByCategory(Long categoryId) {
+    public List<ItemResponseDto> getItemsByCategory(Long categoryId) {
         // 카테고리 유효성 검사
         Category category = findCategoryById(categoryId);
 
         List<Item> items = category.getItems();
         return items.stream()
-                .map(ItemResponse::from)
+                .map(ItemResponseDto::from)
                 .collect(Collectors.toList());
     }
 

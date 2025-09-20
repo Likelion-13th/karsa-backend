@@ -3,7 +3,7 @@ package likelion13th.shop.Controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import likelion13th.shop.DTO.request.OrderCreateRequest;
-import likelion13th.shop.DTO.response.OrderResponse;
+import likelion13th.shop.DTO.response.OrderResponseDto;
 import likelion13th.shop.global.api.ApiResponse;
 import likelion13th.shop.global.api.SuccessCode;
 import likelion13th.shop.login.auth.jwt.CustomUserDetails;
@@ -34,12 +34,9 @@ public class OrderController {
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestBody OrderCreateRequest request
     ) {
-        OrderResponse newOrder = orderService.createOrder(request, customUserDetails);
+        OrderResponseDto newOrder = orderService.createOrder(request, customUserDetails);
         return ApiResponse.onSuccess(SuccessCode.ORDER_CREATE_SUCCESS, newOrder);
     }
-
-
-
 
     /** 모든 주문 목록 조회 **/
     @GetMapping
@@ -47,7 +44,7 @@ public class OrderController {
     public ApiResponse<?> getAllOrders(
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        List<OrderResponse> orders = orderService.getAllOrders(customUserDetails);
+        List<OrderResponseDto> orders = orderService.getAllOrders(customUserDetails);
         // 주문이 없더라도 성공 응답 + 빈 리스트 반환
         if (orders.isEmpty()) {
             return ApiResponse.onSuccess(SuccessCode.ORDER_LIST_EMPTY, Collections.emptyList());

@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import likelion13th.shop.DTO.request.AddressRequest;
 import likelion13th.shop.DTO.response.AddressResponse;
-import likelion13th.shop.DTO.response.UserInfoResponse;
+import likelion13th.shop.DTO.response.UserInfoResponseDto;
 import likelion13th.shop.DTO.response.UserMileageResponse;
 import likelion13th.shop.domain.User;
 import likelion13th.shop.global.api.ApiResponse;

@@ -2,7 +2,7 @@ package likelion13th.shop.service;
 
 import jakarta.transaction.Transactional;
 import likelion13th.shop.DTO.request.OrderCreateRequest;
-import likelion13th.shop.DTO.response.OrderResponse;
+import likelion13th.shop.DTO.response.OrderResponseDto;
 import likelion13th.shop.domain.Item;
 import likelion13th.shop.domain.Order;
 import likelion13th.shop.domain.User;
@@ -27,7 +27,7 @@ public class OrderService {
 
     /** 주문 생성 **/
     @Transactional
-    public OrderResponse createOrder(OrderCreateRequest request, User user) {
+    public OrderResponseDto createOrder(OrderCreateRequest request, User user) {
         // 상품 조회
         Item item = itemRepository.findById(request.getItemId())
                 .orElseThrow(() -> new GeneralException(ErrorCode.ITEM_NOT_FOUND));
@@ -60,15 +60,15 @@ public class OrderService {
         //주문 저장
         orderRepository.save(order);
 
-        return OrderResponse.from(order);
+        return OrderResponseDto.from(order);
     }
 
     /** 로그인한 사용자의 모든 주문 조회 **/
     @Transactional
-    public List<OrderResponse> getAllOrders(User user) {
+    public List<OrderResponseDto> getAllOrders(User user) {
         //프록시 객체 -> DTO로 변환 후 반환
         return user.getOrders().stream()
-                .map(OrderResponse::from)
+                .map(OrderResponseDto::from)
                 .collect(Collectors.toList());
     }
 

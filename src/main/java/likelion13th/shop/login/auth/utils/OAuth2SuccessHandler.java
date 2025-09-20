@@ -62,7 +62,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
                 "각자 여러분 배포 URL 넣어주세요",
                 "http://localhost:3000"
         );
-        if(frontendRedirectUri!=null || authorizeUris.contains(frontendRedirectUri)){
+        if(frontendRedirectUri==null || authorizeUris.contains(frontendRedirectUri)){
             frontendRedirectUri = "프론트 배포 URL 여기도 똑같이 넣어주세요~";
         }
 

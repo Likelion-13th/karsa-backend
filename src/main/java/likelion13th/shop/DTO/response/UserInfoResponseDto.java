@@ -1,6 +1,8 @@
 package likelion13th.shop.DTO.response;
 
+import likelion13th.shop.domain.Order;
 import likelion13th.shop.domain.User;
+import likelion13th.shop.global.constant.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
