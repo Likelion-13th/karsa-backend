@@ -31,14 +31,14 @@ public class OAuth2UserServiceImpl extends DefaultOAuth2UserService {
         @SuppressWarnings("unchecked")
         Map<String, Object> properties =
                 (Map<String, Object>) oAth2User.getAttributes().getOrDefault("properties", Collections.emptyMap());
-        String nickname = properties.getOrDefault("nickname", "카카오사용자").toStirng();
+        String nickname = properties.getOrDefault("nickname", "카카오사용자").toString();
 
         Map<String, Object> extendedAttributes = new HashMap<>(oAth2User.getAttributes());
         extendedAttributes.put("provider_id", providerId);
         extendedAttributes.put("nickname", nickname);
 
         return new DefaultOAuth2User(
-                Collections.singletonMap(new SimpleGrantedAuthority("ROLE_USER")),
+                Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
                 extendedAttributes,
                 "provider_id"
         );

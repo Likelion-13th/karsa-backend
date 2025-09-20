@@ -38,7 +38,7 @@ public class UserInfoController {
     ) {
         User user = userService.getAuthenticatedUser(customUserDetails.getProviderId());
 
-        UserInfoResponse userInfo = UserInfoResponse.from(user);
+        UserInfoResponseDto userInfo = UserInfoResponseDto.from(user);
 
         return ApiResponse.onSuccess(SuccessCode.USER_INFO_GET_SUCCESS, userInfo);
     }
