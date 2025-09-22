@@ -27,7 +27,7 @@ public class OrderResponseDto {
         return new OrderResponseDto(
                 order.getId(),
                 order.getUser().getUsernickname(),
-                order.getItem().getItemName(),
+                order.getItem().getItem_name(),
                 order.getQuantity(),
                 order.getTotalPrice(),
                 order.getFinalPrice(),

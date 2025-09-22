@@ -61,6 +61,7 @@ public class RefreshToken {
     // public boolean isExpired() { return ttl != null && System.currentTimeMillis() >= ttl; }
 }
 
+
 /*
 1) 왜 필요한가?
 - 사용자당 refreshtoken 1개를 보관하기 위해 필요한 파일이라고 생각한다.

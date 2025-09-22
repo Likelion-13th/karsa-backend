@@ -3,6 +3,20 @@ spring:
   profiles:
     active: local
 
+  datasource:
+    url: ${local.db.url}
+    username: ${local.db.username}
+    password: ${local.db.password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create   # 첫 실행 시 테이블 자동 생성
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
   security:
     oauth2:
       client:
@@ -10,8 +24,8 @@ spring:
           kakao:
             client-id: ${KAKAO_REST_API_KEY}
             client-secret: ${KAKAO_CLIENT_SECRET}
+
             redirect-uri: http://localhost:8080/login/oauth2/code/kakao
-            # redirect-uri: 나중에백엔드배포주소넣어주세요:)/login/oauth2/code/kakao
             authorization-grant-type: authorization_code
             client-authentication-method: client_secret_post
             scope:
@@ -23,6 +37,8 @@ spring:
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
 
-JWT_SECRET: ${JWT_SECRET}
-JWT_EXPIRATION: ${JWT_EXPIRATION}                  # Access(ms)
-JWT_REFRESH_EXPIRATION: ${JWT_REFRESH_EXPIRATION}  # Refresh(ms)
+# 로그인 JWT 토큰
+jwt:
+  secret: ${JWT_SECRET}
+  accessExpirationTime: ${JWT_EXPIRATION}
+  refreshExpirationTime: ${JWT_REFRESH_EXPIRATION}

@@ -28,7 +28,7 @@ public class ItemResponseDto {
     public static ItemResponseDto from(Item item) {
         return new ItemResponseDto(
                 item.getId(),
-                item.getItemName(),
+                item.getItem_name(),
                 item.getPrice(),
                 item.getBrand(),
                 item.getImagePath(),
