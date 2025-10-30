@@ -34,14 +34,14 @@ public class UserInfoService {
     @Transactional
     public UserInfoResponseDto getUserMileageById(Long userId) {
         return userRepository.findById(userId).map(UserInfoResponseDto::from)
-                .orElseThrow(() -> new GeneralException(ErrorCode.MILEAGE_NOT_FOUND));
+                .orElseThrow(() -> new GeneralException(ErrorCode.USER_NOT_FOUND));
     }
 
     //내 주소 조회
     @Transactional
     public UserInfoResponseDto getUserAddressById(Long userId) {
         return  userRepository.findById(userId).map(UserInfoResponseDto::from)
-                .orElseThrow(() -> new GeneralException(ErrorCode.ADDRESS_NOT_FOUND));
+                .orElseThrow(() -> new GeneralException(ErrorCode.USER_NOT_FOUND));
     }
 }
 //UserInfoService.java

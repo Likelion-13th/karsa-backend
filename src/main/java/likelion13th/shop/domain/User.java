@@ -10,8 +10,7 @@ import java.util.List;
 
 @Entity
 @Getter
-@Setter
-@Builder
+@Builder // 로그인 관련
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")
@@ -22,34 +21,6 @@ public class User extends BaseEntity {
     @Column(name = "user_id")
     @Setter(AccessLevel.PRIVATE)
     private Long id;
-
-    // 사용자명
-    @Column(nullable = false)
-    private String username;
-
-    // 비밀번호
-    @Column(nullable = false)
-    private String password;
-
-    // 마일리지
-    @Column(nullable = false)
-    private Long mileage;
-
-    //주소
-    @Column(nullable = false)
-    private String address;
-
-    //상세주소
-    @Column(nullable = false)
-    private String field;
-
-    //우편번호
-    @Column(nullable = false)
-    private Long postnumber;
-
-    //최근결제금액
-    @Column(nullable = false)
-    private Long recentlyused;
 
     // 카카오 고유 ID
     @Column(nullable = false, unique = true)
@@ -65,11 +36,14 @@ public class User extends BaseEntity {
 
     // 계정 삭제 가능 여부 (기본값 true)
     @Column(nullable = false)
+    // @Setter
     private boolean deletable = true;
 
     // 마일리지 (기본값 0, 비즈니스 메서드로만 관리)
     @Column(nullable = false)
     @Setter(AccessLevel.NONE)
+    /*테이블 단위로 세터가 적용되어있을 경우 얘만 제외시키거나
+    의도적으로 세터 안넣은거라고 명시적이게 표기 */
     private int maxMileage = 0;
 
     // 최근 총 구매액 (기본값 0, 비즈니스 메서드로만 관리)
@@ -82,18 +56,9 @@ public class User extends BaseEntity {
     private RefreshToken auth;
 
     // 주소 정보 (임베디드 타입)
+    @Setter
     @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "zipcode", column = @Column(name = "zipcode", nullable = false)),
-            @AttributeOverride(name = "address", column = @Column(name = "address", nullable = false)),
-            @AttributeOverride(name = "addressDetail", column = @Column(name = "address_detail", nullable = false))
-    })
     private Address address;
-
-    // 주소 저장/수정 메서드 추가
-    public void updateAddress(Address address) {
-        this.address = address;
-    }
 
     // 주문 정보 (1:N 관계)
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -101,9 +66,14 @@ public class User extends BaseEntity {
 
     // 주문 추가 메서드
     public void addOrder(Order order) {
-        this.orders.add(order);
+        orders.add(order);
         order.setUser(this);
     }
+
+    /**
+     * 도메인 내에서 처리 가능한 비즈니스 로직 또는 세터 대체 메서드
+     * 도메인 보호를 위해 유효성 검사도 해줍니당.
+     **/
 
     // 마일리지 사용
     public void useMileage(int mileage) {
@@ -126,13 +96,20 @@ public class User extends BaseEntity {
 
     // 총 결제 금액 업데이트
     public void updateRecentTotal(int amount) {
+        // 취소의 경우도 있어서 amount에 대한 유효성 검사는 따로 x
         int newTotal = this.recentTotal + amount;
         if (newTotal < 0) {
             throw new IllegalArgumentException("총 결제 금액은 음수가 될 수 없습니다.");
         }
         this.recentTotal = newTotal;
     }
+
+    // 주소 저장/수정 메서드 추가
+    public void updateAddress(Address address) {
+        this.address = address;
+    }
 }
+
 //User.java
 //Order.java와 제가 만든 ERD 테이블을 참고해 코드를 짜 봤습니다.
 //또한 노션 세션 자료에 나와있는 코드 뿐 아닌 제 ERD 테이블을 보며 필요한 항목들을 추가시켰습니다.
