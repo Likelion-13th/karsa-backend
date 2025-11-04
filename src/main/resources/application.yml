@@ -42,7 +42,7 @@ spring:
     multipart:
       enabled: true
       max-file-size: 50MB
-      max-request-size: 50MB
+      max-request-size: 60MB
 
 
 JWT_SECRET: ${JWT_SECRET}
